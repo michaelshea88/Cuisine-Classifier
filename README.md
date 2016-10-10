@@ -2,23 +2,25 @@
 ### Summary
 A supervised machine learning exercise to use recipe ingredients to categorize the cuisine. 
 
+### Results
+Achieved **96% accuracy** using a Naive Bayes classifier.
+
+
+
 ### Process
-1. Gather data from API in JSON format
+1. Obtain data in batches from an API
 2. Parse JSON into pandas DataFrames
 3. Store data on Amazon Web Services Relational Database Service (AWS RDS)
 4. Preprocess text data using Python's NLTK package
 5. Select and tune a classifier using Python's scikit-learn package
-
-### Results
-Achieved **96% accuracy** using a Naive Bayes classifier.
+6. Obtain new unseen data from API to test model's predictive accuracy
 
 ### Background
-Websites like Allrecipes, Epicurious and Yummly aggregate millions of recipes from around the internet and compile them into a centralized resource for users. Visitors to these recipe aggregators can usually find a handful of recipes for a single dish from which to compare. 
+Websites like Allrecipes, Epicurious and Yummly aggregate millions of recipes from around the web and compile them into a centralized resource that's convenient for users. Some of the recipes pulled onto these sites come with lots of details, like difficulty level, total cost of ingredients, cook time, flavor profile, cuisine, etc. Others contain only a list of ingredients and instructions for preparation. Since those extra details allow users to search and filter more effectively, many websites have developed algorithms to predict the characteristics of recipes that contain missing information using data from recipes that do.
 
-Oftentimes, recipes that are viewable on these sites contain details beyond just a list of ingredients and instructions for preparation. They sometimes contain user ratings, difficulty levels, cook times, flavor profiles, etc. Since it's useful to know these things, recipe aggregators have developed algorithms to predict the characteristics of recipes that do not contain this information using data from recipes that do.
+Below is an overview of the steps I took to replicate the process of using machine learning to infer unknown recipe attributes. 
 
-Predicting attributes of unknown data using existing "labeled" data is called "supervised machine learning." It's called *supervised* machine learning because the predictive task involves viewing the data you have, and deciding how you are going to use that information to generate predictions for the data you don't have. 
-
+# Step 1: Get the data
 The goal of this project was to replicate the work of recipe aggregation websites by attempting to develop an algorithm to predict unknown attributes of recipes with missing information, such as the cuisine and the flavor profile. I used data gathered from the [Yummly Recipe API](https://developer.yummly.com/), preprocessed it with the Python natural language processing (NLP) package [NLTK](http://www.nltk.org/), and used Bayesian statistics to predict a recipe's cuisine from a list of its ingredients.
 
 
