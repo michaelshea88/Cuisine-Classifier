@@ -87,3 +87,6 @@ So if you were going through recipes as I was, ingredients like onions and salt 
 The beautiful thing about Naive Bayes, well there are two beautiful things about Naive Bayes. First, it is highly effective at text classification tasks. Second, it doesn't require much tuning at all, unlike other models like logistic regression. 
 
 Here is the classification report I generated from a Multinomial Naive Bayes:
+
+![alt text](https://github.com/michaelshea88/Cuisine-Classifier/blob/master/images/class_report.png "class-report")
+
