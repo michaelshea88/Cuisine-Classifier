@@ -6,7 +6,7 @@ A supervised machine learning exercise to use recipe ingredients to categorize t
 Achieved **96% accuracy** using a Naive Bayes classifier.
 
 ### Process
-![alt text](https://github.com/michaelshea88/Cuisine-Classifier/blob/master/images/process.png "process")
+![alt text](https://github.com/michaelshea88/Cuisine-Classifier/blob/master/images/process.png "process" =20x20)
 
 ### Background
 Websites like Allrecipes, Epicurious and Yummly aggregate millions of recipes from around the web and compile them into a centralized resource that allows users to search for and compare recipes. Some of the recipes pulled onto these sites come with lots of details, such as difficulty level, course, cuisine, total cost of ingredients, cook time, flavor profile, cuisine, etc. Others contain only a list of ingredients and instructions for preparation. 
