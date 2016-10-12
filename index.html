@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Text Mining with Recipe Data by michaelshea88</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Text Mining with Recipe Data</h1>
+        <p>Using recipe ingredients to categorize the cuisine</p>
+
+        <p class="view"><a href="https://github.com/michaelshea88/Cuisine-Classifier">View the Project on GitHub <small>michaelshea88/Cuisine-Classifier</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/michaelshea88/Cuisine-Classifier/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/michaelshea88/Cuisine-Classifier/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/michaelshea88/Cuisine-Classifier">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>Websites like Allrecipes, Epicurious and Yummly aggregate millions of recipes from around the web and compile them into a centralized resource that allows users to search for and compare recipes. Some of the recipes pulled onto these sites come with lots of details, such as difficulty level, course, cuisine, total cost of ingredients, cook time, flavor profile, cuisine, etc. Others contain only a list of ingredients and instructions for preparation. </p>
+
+<p>Since extra details about recipes allow users to search and filter more effectively, many websites have developed algorithms to predict the characteristics of recipes that contain missing information. Below is an overview of the steps I took to replicate the process of using machine learning to infer unknown recipe attributes. </p>
+
+<h1>
+<a id="step-1-get-the-data" class="anchor" href="#step-1-get-the-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 1: Get the data</h1>
+
+<p>I obtained access to the <a href="https://developer.yummly.com/">Yummly Recipe API</a>, which contains data on over 2 million recipes. The API has very good documentation, and academic access can be requested if you're using it for educational purposes. It allows you to set a variety of search parameters, such as allowed_course, excluded_course, allowed_cuisine and excluded_cuisine. Although there was no apparent limit to the maximum number of responses you could request per API call, I found that batches of 500 worked best. Below is some of the code I used to make an API call. It uses the requests libraryIt returns the response in JSON format if the retrieval was successful.</p>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-c"># use requests library for API call</span>
+response <span class="pl-k">=</span> requests.get(url, <span class="pl-v">headers</span><span class="pl-k">=</span>headers, <span class="pl-v">params</span><span class="pl-k">=</span>parameters)
+
+<span class="pl-c"># check status code (200 means all good)</span>
+<span class="pl-c1">print</span> response.status_code
+
+<span class="pl-c"># decode json</span>
+new_data <span class="pl-k">=</span> response.json()</pre></div>
+
+<p>Once the JSON file was retrieved from the API I converted it to a Python dictionary which I then converted to a pandas DataFrame. </p>
+
+<h1>
+<a id="step-2-store-on-aws" class="anchor" href="#step-2-store-on-aws" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 2: Store on AWS</h1>
+
+<p>Since I was only requesting 500 recipes at a time, I had to make a series of API calls over the course of about a week. I stored the data retrieved from each batch on a Postgres instance on Amazon's Relational Database Service. I used pandas' very handy to_sql function to add slices of data to the database I created. Then when I had all the data compiled in  Postgres, I used the read_sql function to make queries directly into pandas. </p>
+
+<p>Here's how I sent data to sql. The Postgres instance I created is no longer active.</p>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">from</span> sqlalchemy <span class="pl-k">import</span> create_engine
+<span class="pl-k">import</span> pandas <span class="pl-k">as</span> pd
+
+<span class="pl-c">#establish db connection</span>
+engine <span class="pl-k">=</span> create_engine(<span class="pl-s"><span class="pl-pds">'</span>postgresql://treytrey3:113315th3@recipeproject3.czcsc2tr7kct.us-east-1.rds.amazonaws.com:5432/dsicapstone3<span class="pl-pds">'</span></span>)
+
+<span class="pl-c">#sample dataframe </span>
+df <span class="pl-k">=</span> pd.read_csv(<span class="pl-s"><span class="pl-pds">'</span>../ingredients_combined/ingredients_reduced.csv<span class="pl-pds">'</span></span>)
+
+<span class="pl-c">#name it and send to sql</span>
+name <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>ingredients<span class="pl-pds">'</span></span>
+df.to_sql(name, engine, <span class="pl-v">flavor</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>postgres<span class="pl-pds">'</span></span>, <span class="pl-v">if_exists</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>replace<span class="pl-pds">'</span></span>)</pre></div>
+
+<h1>
+<a id="step-3-normalize-text-data" class="anchor" href="#step-3-normalize-text-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 3: Normalize text data</h1>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">from</span> nltk.stem <span class="pl-k">import</span> WordNetLemmatizer</pre></div>
+
+<p>I used NLTK's <a href="http://www.nltk.org/api/nltk.stem.html#module-nltk.stem.wordnet">WordNetLemmatizer</a> to normalize ingredient names. Lemmatization is a natural language processing (NLP) technique that allows you to ignore trivial differences between different forms of the same word. Stanford's <a href="http://nlp.stanford.edu/IR-book/">Introduction to Information Retrieval</a> is a good resource for learning about NLP. Here they discuss the difference between lemmatization and another technique called stemming:</p>
+
+<blockquote>
+<p>Stemming usually refers to a crude heuristic process that chops off the ends of words in the hope of achieving this goal correctly most of the time, and often includes the removal of derivational affixes. Lemmatization usually refers to doing things properly with the use of a vocabulary and morphological analysis of words, normally aiming to remove inflectional endings only and to return the base or dictionary form of a word, which is known as the lemma.</p>
+</blockquote>
+
+<p>For example, compare the output of the word "sausage" when passed through a lemmatizer and a stemmer:</p>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">from</span> nltk.stem <span class="pl-k">import</span> WordNetLemmatizer, PorterStemmer
+
+wordnet_lemmatizer <span class="pl-k">=</span> WordNetLemmatizer()
+porter_stemmer <span class="pl-k">=</span> PorterStemmer()
+
+<span class="pl-c1">print</span> wordnet_lemmatizer.lemmatize(<span class="pl-s"><span class="pl-pds">'</span>sausages<span class="pl-pds">'</span></span>)
+<span class="pl-c1">print</span> porter_stemmer.stem(<span class="pl-s"><span class="pl-pds">'</span>sausages<span class="pl-pds">'</span></span>)</pre></div>
+
+<div class="highlight highlight-source-python"><pre>sausage
+sausag</pre></div>
+
+<h1>
+<a id="step-4-create-bag-of-words" class="anchor" href="#step-4-create-bag-of-words" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 4: Create Bag of Words</h1>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">from</span> sklearn.feature_extraction.text <span class="pl-k">import</span> TfidfVectorizer</pre></div>
+
+<p>The above <a href="scikit-learn.org">scikit-learn</a> "feature_extraction" package was also really important to the success of this project. It contains many common NLP-related tools. One that was especially useful was the TfidfVectorizer. Tf-idf stands for <em>term frequency inverse document frequency</em>. It's not complicated; it essentially weights the importance of words based on their frequency in a document. </p>
+
+<p>So if you were going through recipes as I was, ingredients like onions and salt and pepper aren't very indicative of the cuisine of the recipe. But jalapeno or soy sauce or herring is more important, but also more uncommon. Tf-idf weighs rarer terms more heavily than common terms. <a href="http://planspace.org/20150524-tfidf_is_about_what_matters/">Here is an excellent overview</a> of the concept. </p>
+
+<h1>
+<a id="step-5-deploy-naive-bayes" class="anchor" href="#step-5-deploy-naive-bayes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 5: Deploy Naive Bayes</h1>
+
+<p>The beautiful thing about Naive Bayes, well there are two beautiful things about Naive Bayes. First, it is highly effective at text classification tasks. Second, it doesn't require much tuning at all, unlike other models like logistic regression. </p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/michaelshea88">michaelshea88</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
