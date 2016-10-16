@@ -86,7 +86,10 @@ sausag</pre></div>
 <h1>
 <a id="step-5-deploy-naive-bayes" class="anchor" href="#step-5-deploy-naive-bayes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 5: Deploy Naive Bayes</h1>
 
-<p>The beautiful thing about Naive Bayes, well there are two beautiful things about Naive Bayes. First, it is highly effective at text classification tasks. Second, it doesn't require much tuning at all, unlike other models like logistic regression. </p>
+<p>There are two beautiful things about Naive Bayes. First, it is highly effective at text classification tasks because it assumes independence between each pair of features. The Bag of Words representation also assumes independence between all the words in each document, acccounting for at least part of theis synergy. Second, it doesn't require much tuning at all, unlike other models like logistic regression. You mainly have to decide whether to run the Multinomial or Bernouilli  flavor of the model. Since Naive Bayes is quite fast compared to other models, there's often time to run both and see how they compare.</p>
+<p>Below is the accuracy score I generated from a Bernouilli Naive Bayes. Bernouilli performed slightly better than Multinomial Naive Bayes. Sometimes it's unclear why one model performs better than another, so it's always good to compare a few. Scikit-Learn docs postulate that Bernoulli may perform better than Multinomial Naive Bayes on datasets with shorter documents. This certainly makes sense in the current case, where each document was a short list of ingredients.</p>
+<h3>
+<a id="Accuracy Score: 97%" class="anchor" href="#accuracy-score:-97%" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Accuracy Score: 97%</h1>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/michaelshea88/Cuisine-Classifier">Text Mining with Recipe Data</a> is maintained by <a href="https://github.com/michaelshea88">michaelshea88</a>.</span>
