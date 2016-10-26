@@ -26,7 +26,7 @@
 <h1>
 <a id="step-1-get-the-data" class="anchor" href="#step-1-get-the-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 1: Get the data</h1>
 
-<p><img src="http://www.yummly.com/wp-content/uploads/2013/03/Untitled-5.jpg" alt="yum"></p>
+<p><img src="https://github.com/michaelshea88/Cuisine-Classifier/blob/master/images/Capture1.PNG" alt="yum"></p>
 
 <p>I obtained access to the <a href="https://developer.yummly.com/">Yummly Recipe API</a>, which contains data on over 2 million recipes. The API has very good documentation, and academic access can be requested if you're using it for educational purposes. It allows you to set a variety of search parameters, such as allowed_course, excluded_course, allowed_cuisine and excluded_cuisine. Although there was no apparent limit to the maximum number of responses you could request per API call, I found that batches of 500 worked best. Below is some of the code I used to make an API call. It uses the requests library, which returns the response in JSON format if the retrieval was successful. Once the JSON file was retrieved from the API I converted it to a Python dictionary which I then converted to a pandas DataFrame. </p>
 
