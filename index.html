@@ -50,11 +50,7 @@ df.to_sql(name, engine, <span class="pl-v">flavor</span><span class="pl-k">=</sp
 
 <h1>
 <a id="step-3-clean-text-data" class="anchor" href="#step-3-clean-text-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 3: Clean text data</h1>
-<p>I had to preprocess the text data before I could normalize it. This required the removal of non-alphanumeric characters, as well as converting the text from a string to a list of individual words without whitespace. For example, here's how I split the text into a list that I could then iterate through:</p>
-
-<span class="pl-c">#s# Remove non-alpha characters </span>
-name_string1 <span class="pl-k">=</span> [re<span style="color: #333333">.</span>sub(<span style="background-color: #fff0f0">&#39;[^A-Za-z]&#39;</span>, <span style="background-color: #fff0f0">&#39; &#39;</span>, z)<span style="color: #333333">.</span>strip()<span style="color: #333333">.</span>lower() <span style="color: #008800; font-weight: bold">for</span> z <span style="color: #000000; font-weight: bold">in</span> df[<span style="background-color: #fff0f0">&#39;id&#39;</span>]]
-</pre></div>
+<p>I had to preprocess the text data before I could normalize it. This required the removal of non-alphanumeric characters, as well as converting the text from a string to a list of individual words without whitespace.</p>
 
 
 <h1>
