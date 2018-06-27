@@ -49,7 +49,10 @@ name <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span
 df.to_sql(name, engine, <span class="pl-v">flavor</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>postgres<span class="pl-pds">'</span></span>, <span class="pl-v">if_exists</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>replace<span class="pl-pds">'</span></span>)</pre></div>
 
 <h1>
-<a id="step-3-normalize-text-data" class="anchor" href="#step-3-normalize-text-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 3: Normalize text data</h1>
+<a id="step-3-clean-text-data" class="anchor" href="#step-3-clean-text-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 3: Clean text data</h1>
+      
+<h1>
+<a id="step-4-normalize-text-data" class="anchor" href="#step-3-normalize-text-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 3: Normalize text data</h1>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">from</span> nltk.stem <span class="pl-k">import</span> WordNetLemmatizer</pre></div>
 
@@ -73,7 +76,7 @@ porter_stemmer <span class="pl-k">=</span> PorterStemmer()
 sausag</pre></div>
 
 <h1>
-<a id="step-4-create-bag-of-words" class="anchor" href="#step-4-create-bag-of-words" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 4: Create Bag of Words</h1>
+<a id="step-5-create-bag-of-words" class="anchor" href="#step-4-create-bag-of-words" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 4: Create Bag of Words</h1>
 
 <div class="highlight highlight-source-python"><pre><span class="pl-k">from</span> sklearn.feature_extraction.text <span class="pl-k">import</span> TfidfVectorizer</pre></div>
 
@@ -82,9 +85,9 @@ sausag</pre></div>
 <p>So if you were going through recipes as I was, ingredients like onions and salt and pepper aren't very indicative of the cuisine of the recipe. But jalapeno or soy sauce or herring is more important, but also more uncommon. Tf-idf weighs rarer terms more heavily than common terms. <a href="http://planspace.org/20150524-tfidf_is_about_what_matters/">Here is an excellent overview</a> of the concept. </p>
 
 <h1>
-<a id="step-5-deploy-naive-bayes" class="anchor" href="#step-5-deploy-naive-bayes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 5: Deploy Naive Bayes</h1>
+<a id="step-6-deploy-naive-bayes" class="anchor" href="#step-5-deploy-naive-bayes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 5: Deploy Naive Bayes</h1>
 
-<p>There are two beautiful things about Naive Bayes. First, it is highly effective at text classification tasks because it assumes independence between each pair of features. The Bag of Words representation also assumes independence between all the words in each document, acccounting for at least part of theis synergy. Second, it doesn't require much tuning at all, unlike other models like logistic regression. You mainly have to decide whether to run the Multinomial or Bernouilli  flavor of the model. Since Naive Bayes is quite fast compared to other models, there's often time to run both and see how they compare.</p>
+<p>Naive Bayes is highly effective at text classification tasks because it assumes independence between each pair of features. The Bag of Words representation also assumes independence between all the words in each document, acccounting for at least part of theis synergy. It also doesn't require much tuning at all, unlike other models like logistic regression. You mainly have to decide whether to run the Multinomial or Bernouilli  flavor of the model. Since Naive Bayes is quite fast compared to other models, there's often time to run both and see how they compare.</p>
 <p>Below is the accuracy score I generated from a Bernouilli Naive Bayes. Bernouilli performed slightly better than Multinomial Naive Bayes. Sometimes it's unclear why one model performs better than another, so it's always good to compare a few. Scikit-Learn docs postulate that Bernoulli may perform better than Multinomial Naive Bayes on datasets with shorter documents. This certainly makes sense in the current case, where each document was a short list of ingredients.</p>
 <h3>
 <a id="Accuracy Score: 97%" class="anchor" href="#accuracy-score:-97%" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Accuracy Score: 97%</h1>
